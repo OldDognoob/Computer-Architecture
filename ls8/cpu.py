@@ -73,4 +73,27 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        running = True
+        ir = self.ram[self.pc]
+        while running:
+            if ir == 0b10000010:
+                print("0b10000010")
+                ram = self.ram[self.pc + 1]
+                num = self.ram[self.pc + 2]
+                self.register[ram] = num
+                self.pc += 1
+            elif ir == 0b01000111:
+                print("0b01000111")
+                ram = self.ram[self.pc +1]
+                self.pc += 3
+            elif ir == 0b00000001:
+                print("0b00000001")
+                run = False
+            else:
+                print(f'Unknown instruction {ir} at address [{self.ram[self.pc]}]')
+                run = False
+                self.pc += 2
+                ir = self.ram[self.pc]
+
+
+
