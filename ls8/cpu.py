@@ -71,6 +71,8 @@ class CPU:
 
         print()
 
+    
+
     def run(self):
         """Run the CPU."""
         running = True
@@ -89,6 +91,8 @@ class CPU:
             elif ir == 0b00000001:
                 print("0b00000001")
                 run = False
+            elif ir == HLT:
+                running = False
             else:
                 print(f'Unknown instruction {ir} at address [{self.ram[self.pc]}]')
                 run = False
