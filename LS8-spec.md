@@ -181,7 +181,7 @@ Machine code values shown in both binary and hexadecimal.
 
 ### ADD
 
-*This is an instruction handled by the ALU.*
+*This is an instruction handled by the f.*
 
 `ADD registerA registerB`
 
