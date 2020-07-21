@@ -61,7 +61,7 @@ class CPU:
                     address += 1
         except FileNotFoundError:
             print(f"{sys.argv[0]}:{sys.argv[1]} not found!")
-            sys.exit(2)
+            sys.exit(1)
 
         for instruction in program:
             self.ram[address] = instruction
@@ -132,34 +132,34 @@ class CPU:
         """
         instruction_length = 1 # bitshifted instruction
         while not self.halted:
-            ir = self.ram[self.pc]
+            cmd = self.ram[self.pc]
             self.pc += instruction_length
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
             # halt
-            if ir == HLT:
+            if cmd == HLT:
                 self.halted = True
                 
 
             # LDI
-            elif ir == LDI:
+            elif cmd == LDI:
                 self.reg[operand_a] = operand_b
                 instruction_length = 3
 
             # PRN
-            elif ir == PRN:
+            elif cmd == PRN:
                 print(self.reg[operand_a])
                 instruction_length = 2
 
             # MUL
-            elif ir == MUL:
-                self.alu(ir,operand_a,operand_b)
+            elif cmd == MUL:
+                self.alu(cmd,operand_a,operand_b)
                 instruction_length = 3
 
             else:
                 print(f"program failed to run")
-                sys.exit(2)
+                sys.exit(1)
             
 
 
