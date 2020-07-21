@@ -4,6 +4,7 @@
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b10000111
+MUL = 0b10100010
 
 import sys
 
@@ -53,7 +54,9 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "MUL":
+            self.reg[reg_a] *= self.reg[reg_b]
+            #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -115,19 +118,24 @@ class CPU:
             operand_b = self.ram_read(self.pc + 2)
 
             # halt
-            if ir == 0b00000001:
+            if ir == HLT:
                 self.halted = True
                 
 
             # LDI
-            elif ir == 0b10000010:
+            elif ir == LDI:
                 self.reg[operand_a] = operand_b
                 instruction_length = 3
 
             # PRN
-            elif ir == 0b01000111:
+            elif ir == PRN:
                 print(self.reg[operand_a])
                 instruction_length = 2
+
+            # MUL
+            elif ir == MUL:
+                self.alu(ir,operand_a,operand_b)
+                instruction_length = 3
 
             self.pc += instruction_length
 
