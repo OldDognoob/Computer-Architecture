@@ -44,6 +44,25 @@ class CPU:
             0b00000001, # HLT
         ]
 
+        try:
+            address = 0
+
+            with open(sys.argv[1]) as file: # use open() to open file
+                for line in file: # read each line
+                    comment_split = line.split('#') # remove comments
+                    string_number = comment_split[0].strip() # convert to a number splitting and stripping
+
+                    if string_number == '':
+                        continue # ignore blank lines
+                    val = int(string_number, 2)
+                    print(string_number)
+                    self.ram[address] = val
+
+                    address += 1
+        except FileNotFoundError:
+            print(f"{sys.argv[0]}:{sys.argv[1]} not found!")
+            sys.exit(2)
+
         for instruction in program:
             self.ram[address] = instruction
             address += 1
@@ -114,6 +133,7 @@ class CPU:
         instruction_length = 1 # bitshifted instruction
         while not self.halted:
             ir = self.ram[self.pc]
+            self.pc += instruction_length
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
@@ -137,7 +157,10 @@ class CPU:
                 self.alu(ir,operand_a,operand_b)
                 instruction_length = 3
 
-            self.pc += instruction_length
+            else:
+                print(f"program failed to run")
+                sys.exit(2)
+            
 
 
 
