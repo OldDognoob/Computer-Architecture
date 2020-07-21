@@ -1,0 +1,43 @@
+Computer Basic Structure
+
+The objective is to introduce some basic concepts and associated terminology of the technology associated with the functional units of a computer.
+
+## CPU
+
+One component term you may have encountered is “CPU.” A CPU is a foundational unit to pretty much every device that you own. 
+CPUs, or Central Processing Units, are responsible for processing and executing instructions.
+The CPU is the core component of what defines a computing device, but it isn’t the sole component — again, it’s just the brains. 
+It’s a chip that sits in a special seat (socket) located on the main circuit board (motherboard or mainboard) inside the device.
+
+CPUs are built by placing billions of microscopic transistors onto a single computer chip. 
+Those transistors allow it to make the calculations it needs to run programs that are stored on your system’s memory. 
+
+## RAM
+
+Random-access memory, or RAM, is one of the most important components in all devices, from PCs to smartphones to game consoles. 
+Without RAM, doing just about anything on any system would be much, much slower. 
+On the flip side, not having enough for the application or game you’re trying to run can bring things to a crawl or even prevent them from running at all.
+
+## Arithmetic Logic Unit (ALU)
+
+An arithmetic logic unit (ALU) is a major component of the central processing unit of a computer system. It does all processes related to arithmetic and logic operations that need to be done on instruction words. 
+In some microprocessor architectures, the ALU is divided into the arithmetic unit (AU) and the logic unit (LU). 
+The arithmetic logic unit is that part of the CPU that handles all the calculations the CPU may need. 
+Most of these operations are logical in nature. Depending on how the ALU is designed, it can make the CPU more powerful, but it also consumes more energy and creates more heat.
+Therefore, there must be a balance between how powerful and complex the ALU is and how expensive the whole unit becomes. 
+This is why faster CPUs are more expensive, consume more power and dissipate more heat. 
+
+## Register
+
+A register is a temporary storage area built into a CPU. 
+Some registers are used internally and cannot be accessed outside the processor, while others are user-accessible.
+Internal registers include the instruction register (IR), memory buffer register (MBR), memory data register (MDR), and memory address register (MAR). 
+The instruction register fetches instructions from the program counter (PC) and holds each instruction as it is executed by the processor.
+The memory registers are used to pass data from memory to the processor. The storage time of internal registers is extremely temporary, as they often hold data for less than a millisecond.
+
+For example, a data register may store individual values referenced being by a currently running program.
+
+An address register contains memory addresses, which reference different blocks of memory within the system RAM.
+
+For many years, registers were 32-bit, but now many are 64-bit in size. A 64-bit register is necessary for a 64-bit processor, since it enables the CPU to access 64-bit memory addresses. 
+
