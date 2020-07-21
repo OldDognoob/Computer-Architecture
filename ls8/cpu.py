@@ -18,11 +18,11 @@ class CPU:
         self.halted = False
 
     def ram_read(self,mar):
-        # accepts an address and return its value
+        # accepts an address = mar and return its value
         return self.ram[mar] 
 
-    def ram_write(self, mdr, mar):
-        # takes a value = mdr writes it to the register index = ram
+    def ram_write(self, mar, mdr):
+        # takes a value = mdr writes it to the address = mar
         self.ram[mar] = mdr
         
 
