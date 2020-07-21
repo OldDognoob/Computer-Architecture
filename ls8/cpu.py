@@ -1,5 +1,10 @@
 """CPU functionality."""
 
+# opcodes
+HLT = 0b00000001
+LDI = 0b10000010
+PRN = 0b10000111
+
 import sys
 
 class CPU:
@@ -9,10 +14,11 @@ class CPU:
         """Construct a new CPU."""
         self.pc = 0 # program counter
         self.ram = [0] * 255 # bytes of memory
-        self.register = [0] * 8 # like variables
+        self.reg = [0] * 8 # like variables
+        self.halted = False
 
     def ram_read(self,mar):
-        # accepts a register index and return its value
+        # accepts an address and return its value
         return self.ram[mar] 
 
     def ram_write(self, mdr, mar):
@@ -77,6 +83,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        """
         running = True
         ir = self.ram[self.pc]
         while running:
@@ -100,6 +107,31 @@ class CPU:
                 run = False
                 self.pc += 2
                 ir = self.ram[self.pc]
+        """
+        instruction_length = 1 # bitshifted instruction
+        while not self.halted:
+            ir = self.ram[self.pc]
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
+
+            # halt
+            if ir == 0b00000001:
+                self.halted = True
+                
+
+            # LDI
+            elif ir == 0b10000010:
+                self.reg[operand_a] = operand_b
+                instruction_length = 3
+
+            # PRN
+            elif ir == 0b01000111:
+                print(self.reg[operand_a])
+                instruction_length = 2
+
+            self.pc += instruction_length
+
+
 
 
 
