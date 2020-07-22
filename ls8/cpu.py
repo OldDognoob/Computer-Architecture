@@ -3,7 +3,7 @@
 # opcodes
 HLT = 0b00000001
 LDI = 0b10000010
-PRN = 0b10000111
+PRN = 0b01000111
 MUL = 0b10100010
 SUB = 0b10100001
 DIV = 0b10100011
@@ -24,16 +24,13 @@ class CPU:
         # accepts an address = mar and return its value
         return self.ram[mar] 
 
-    def ram_write(self, mar, mdr):
+    def ram_write(self, mdr, mar):
         # takes a value = mdr writes it to the address = mar
         self.ram[mar] = mdr
         
 
     def load(self, filename):
         """Load a program into memory."""
-
-        address = 0
-
         # For now, we've just hardcoded a program:
         """
         program = [
@@ -49,7 +46,7 @@ class CPU:
         try:
             address = 0
 
-            with open(sys.argv[1]) as file: # use open() to open file
+            with open(filename) as file: # use open() to open file
                 for line in file: # read each line
                     comment_split = line.split('#') # remove comments
                     string_number = comment_split[0].strip() # convert to a number splitting and stripping
@@ -57,12 +54,12 @@ class CPU:
                     if string_number == '':
                         continue # ignore blank lines
                     val = int(string_number, 2)
-                    print(string_number)
+                    # print(string_number)
                     self.ram[address] = val
                     address += 1
         except FileNotFoundError:
-            print(f"{sys.argv[0]}:{sys.argv[1]} not found!")
-            sys.exit(1)
+            print(f"{sys.argv[0]}: {filename} not found!")
+            sys.exit(2)
         """
         for instruction in program:
             self.ram[address] = instruction
@@ -104,19 +101,16 @@ class CPU:
 
         print()
 
-    def hlt(self):
-        self.pc += 1
-        self.running = False
-
     def run(self):
         """Run the CPU."""
   
         while not self.halted:
             ir = self.ram[self.pc]
             instruction_length =((ir >> 6) & 0b11) + 1 # bitshifted instruction
-            self.pc += instruction_length
+            
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
+             # set the instruction length here (extract)
 
             # halt
             if ir == HLT:
@@ -139,9 +133,9 @@ class CPU:
                
 
             else:
-                print(f"program failed to run")
+                print(f"program failed to run", "{0:b}".format(ir))
                 sys.exit(1)
-            
+            self.pc += instruction_length
 
 
 
