@@ -5,6 +5,8 @@ HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b10000111
 MUL = 0b10100010
+SUB = 0b10100001
+DIV = 0b10100011
 
 import sys
 
@@ -27,13 +29,13 @@ class CPU:
         self.ram[mar] = mdr
         
 
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
 
         address = 0
 
         # For now, we've just hardcoded a program:
-
+        """
         program = [
             # From print8.ls8
             0b10000010, # LDI R0,8
@@ -43,7 +45,7 @@ class CPU:
             0b00000000,
             0b00000001, # HLT
         ]
-
+        """
         try:
             address = 0
 
@@ -61,20 +63,24 @@ class CPU:
         except FileNotFoundError:
             print(f"{sys.argv[0]}:{sys.argv[1]} not found!")
             sys.exit(1)
-
+        """
         for instruction in program:
             self.ram[address] = instruction
             address += 1
-
+        """
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
+        elif op == "SUB":
+            self.reg[reg_a] -= self.reg[reg_b]
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
-            #elif op == "SUB": etc
+        elif op == "DIV":
+            self.reg[reg_a] //= self.reg[reg_b]
+            
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -104,57 +110,33 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        """
-        running = True
-        ir = self.ram[self.pc]
-        while running:
-            if ir == 0b10000010:
-                print("0b10000010")
-                ram = self.ram[self.pc + 1]
-                num = self.ram[self.pc + 2]
-                self.register[ram] = num
-                self.pc += 1
-            elif ir == 0b01000111:
-                print("0b01000111")
-                ram = self.ram[self.pc +1]
-                self.pc += 3
-            elif ir == 0b00000001:
-                print("0b00000001")
-                run = False
-#            elif ir == HLT:
-#                running = False
-            else:
-                print(f'Unknown instruction {ir} at address [{self.ram[self.pc]}]')
-                run = False
-                self.pc += 2
-                ir = self.ram[self.pc]
-        """
-        instruction_length = 1 # bitshifted instruction
+  
         while not self.halted:
-            cmd = self.ram[self.pc]
+            ir = self.ram[self.pc]
+            instruction_length =((ir >> 6) & 0b11) + 1 # bitshifted instruction
             self.pc += instruction_length
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
 
             # halt
-            if cmd == HLT:
+            if ir == HLT:
                 self.halted = True
                 
 
             # LDI
-            elif cmd == LDI:
+            elif ir == LDI:
                 self.reg[operand_a] = operand_b
-                instruction_length = 3
+             
 
             # PRN
-            elif cmd == PRN:
+            elif ir == PRN:
                 print(self.reg[operand_a])
-                instruction_length = 2
+               
 
             # MUL
-            elif cmd == MUL:
-                self.alu(cmd,operand_a,operand_b)
-                instruction_length = 3
+            elif ir == MUL:
+                self.alu("MUL",operand_a,operand_b)
+               
 
             else:
                 print(f"program failed to run")
