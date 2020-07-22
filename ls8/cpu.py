@@ -10,6 +10,7 @@ DIV = 0b10100011
 PUSH = 0b01000101
 POP = 0b01000110
 
+SP = 7 # SP to be R7 
 import sys
 
 class CPU:
@@ -21,6 +22,7 @@ class CPU:
         self.ram = [0] * 255 # bytes of memory
         self.reg = [0] * 8 # like variables
         self.halted = False
+        
 
     def ram_read(self,mar):
         # accepts an address = mar and return its value
@@ -135,14 +137,34 @@ class CPU:
                
             # PUSH system stack
             elif command == PUSH:
+                # setup
+                # get a register from the memory
+                index_of_the_register = self.ram_read(self.pc + 1)
+                # get the value out of the register
+                val = self.reg[index_of_the_register]
+                
+
+                # do the push
+                self.reg[SP] -= 1 # decrementing by 1
+                self.ram[self.reg[SP]] = val
+
+                
 
             # POP system stack
             elif command == POP:
+                # setup
+                index_of_the_register = self.ram_read(self.pc + 1)
+                val = self.ram[self.reg[SP]]
 
+                # do the pop
+                self.reg[index_of_the_register] = val
+                self.reg[SP] += 1 # increment by 1
+                
 
             else:
-                print(f"program failed to run", "{0:b}".format(ir))
+                print(f"program failed to run", "{0:b}".format(command))
                 sys.exit(1)
+
             self.pc += instruction_length
 
 
