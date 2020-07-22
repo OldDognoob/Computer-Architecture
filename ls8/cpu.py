@@ -7,6 +7,8 @@ PRN = 0b01000111
 MUL = 0b10100010
 SUB = 0b10100001
 DIV = 0b10100011
+PUSH = 0b01000101
+POP = 0b01000110
 
 import sys
 
@@ -105,32 +107,38 @@ class CPU:
         """Run the CPU."""
   
         while not self.halted:
-            ir = self.ram[self.pc]
-            instruction_length =((ir >> 6) & 0b11) + 1 # bitshifted instruction
+            command = self.ram[self.pc]
+            instruction_length =((command >> 6) & 0b11) + 1 # bitshifted instruction
             
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
              # set the instruction length here (extract)
 
             # halt
-            if ir == HLT:
+            if command == HLT:
                 self.halted = True
                 
 
             # LDI
-            elif ir == LDI:
+            elif command == LDI:
                 self.reg[operand_a] = operand_b
              
 
             # PRN
-            elif ir == PRN:
+            elif command == PRN:
                 print(self.reg[operand_a])
                
 
             # MUL
-            elif ir == MUL:
+            elif command == MUL:
                 self.alu("MUL",operand_a,operand_b)
                
+            # PUSH system stack
+            elif command == PUSH:
+
+            # POP system stack
+            elif command == POP:
+
 
             else:
                 print(f"program failed to run", "{0:b}".format(ir))
