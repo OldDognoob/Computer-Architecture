@@ -4,6 +4,7 @@
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
+ADD = 0b10100000
 MUL = 0b10100010
 SUB = 0b10100001
 DIV = 0b10100011
@@ -30,7 +31,7 @@ class CPU:
         # accepts an address = mar and return its value
         return self.ram[mar] 
 
-    def ram_write(self, mdr, mar):
+    def ram_write(self, mar, mdr):
         # takes a value = mdr writes it to the address = mar
         self.ram[mar] = mdr
         
@@ -112,8 +113,7 @@ class CPU:
   
         while not self.halted:
             command = self.ram[self.pc]
-            instruction_length =((command >> 6) & 0b11) + 1 # bitshifted instruction
-            
+            # instruction_length =((command >> 6) & 0b11) + 1 # bitshifted instruction
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
              # set the instruction length here (extract)
@@ -122,21 +122,25 @@ class CPU:
             if command == HLT:
                 self.halted = True
                 
-
             # LDI
             elif command == LDI:
                 self.reg[operand_a] = operand_b
-             
+                self.pc += 3
 
             # PRN
             elif command == PRN:
                 print(self.reg[operand_a])
+                self.pc += 2
                
-
             # MUL
             elif command == MUL:
                 self.alu("MUL",operand_a,operand_b)
+                self.pc += 3
                
+            elif command == ADD:
+                self.alu("ADD", operand_a, operand_b)
+                self.pc += 3
+
             # PUSH system stack
             elif command == PUSH:
                 # setup
@@ -145,12 +149,9 @@ class CPU:
                 # get the value out of the register
                 val = self.reg[index_of_the_register]
                 
-
                 # do the push
                 self.reg[SP] -= 1 # decrementing by 1
                 self.ram[self.reg[SP]] = val
-
-                
 
             # POP system stack
             elif command == POP:
@@ -170,19 +171,20 @@ class CPU:
                 # set the pc to the address at the given register
                 index_of_the_register = self.ram[self.pc + 1]
                 self.pc = self.reg[index_of_the_register]
-                instruction_length = 0
             # RET
             elif command == RET:
                 # pop the stack on the pc
                 self.pc = self.ram[self.reg[SP]]
                 self.reg[SP] += 1  
-                instruction_length = 0
+
+            elif command == HLT:
+                sys.exit(0)   
 
             else:
                 print(f"program failed to run", "{0:b}".format(command))
                 sys.exit(1)
 
-            self.pc += instruction_length
+            # self.pc += instruction_length
 
 
 
