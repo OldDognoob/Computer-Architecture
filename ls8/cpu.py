@@ -9,6 +9,8 @@ SUB = 0b10100001
 DIV = 0b10100011
 PUSH = 0b01000101
 POP = 0b01000110
+CALL = 0b01010000
+RET = 0b00010001
 
 SP = 7 # SP to be R7 
 import sys
@@ -160,6 +162,21 @@ class CPU:
                 self.reg[index_of_the_register] = val
                 self.reg[SP] += 1 # increment by 1
                 
+            # CALL
+            elif command == CALL:
+                # push the address of the instruction direction
+                self.reg[SP] -= 1
+                self.ram[self.reg[SP]] = self.pc + 2
+                # set the pc to the address at the given register
+                index_of_the_register = self.ram[self.pc + 1]
+                self.pc = self.reg[index_of_the_register]
+                instruction_length = 0
+            # RET
+            elif command == RET:
+                # pop the stack on the pc
+                self.pc = self.ram[self.reg[SP]]
+                self.reg[SP] += 1  
+                instruction_length = 0
 
             else:
                 print(f"program failed to run", "{0:b}".format(command))
