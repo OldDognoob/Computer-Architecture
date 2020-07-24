@@ -15,6 +15,11 @@ RET = 0b00010001
 CMP = 0b10100111
 
 SP = 7 # SP to be R7 
+
+# FLAGS
+Less_than = 0
+Greater_than = 0
+Equal = 0
 import sys
 
 class CPU:
@@ -179,8 +184,25 @@ class CPU:
                 self.pc = self.ram[self.reg[SP]]
                 self.reg[SP] += 1  
 
-            elif command == HLT:
-                sys.exit(0)   
+            # CMP
+            elif command == CMP:
+                if self.reg[operand_a] < self.reg[operand_b]:
+                    Less_than = 1
+                    Greater_than = 0
+                    Equal = 0
+                    self.flags = 0b00000100
+                elif self.reg[operand_a] < self.reg[operand_b]:
+                    Less_than = 0
+                    Greater_than = 1
+                    Equal = 0
+                    self.flags = 0b00000010
+                elif self.reg[operand_a] < self.reg[operand_b]:
+                    Less_than = 0
+                    Greater_than = 0
+                    Equal = 1
+                    self.flags = 0b00000001
+                    self.pc += 3
+
 
             else:
                 print(f"program failed to run", "{0:b}".format(command))
