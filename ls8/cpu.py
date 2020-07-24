@@ -12,9 +12,12 @@ PUSH = 0b01000101
 POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
-CMP = 0b10100111 # Compare - if values are equal set E flag to 1, else to zero
-JMP = 0b01010100 # Jump to addr stored
-JEQ = 0b01010101 # Jump to addr if equal flag is True
+
+CMP = 0b10100111  # Compare - if values are equal set E flag to 1, else to zero
+JMP = 0b01010100  # Jump to addr stored
+JEQ = 0b01010101  # Jump to addr if equal flag is true
+JNE = 0b01010110  # Jump to addr if equal flag is false
+
 
 SP = 7 # SP to be R7 
 
@@ -22,6 +25,7 @@ SP = 7 # SP to be R7
 Less_than = 0
 Greater_than = 0
 Equal = 0
+
 import sys
 
 class CPU:
@@ -92,8 +96,7 @@ class CPU:
         elif op == "MUL":
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == "DIV":
-            self.reg[reg_a] //= self.reg[reg_b]
-            
+            self.reg[reg_a] //= self.reg[reg_b]    
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -125,7 +128,7 @@ class CPU:
             # instruction_length =((command >> 6) & 0b11) + 1 # bitshifted instruction
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-             # set the instruction length here (extract)
+            # set the instruction length here (extract)
 
             # halt
             if command == HLT:
@@ -185,41 +188,51 @@ class CPU:
                 # pop the stack on the pc
                 self.pc = self.ram[self.reg[SP]]
                 self.reg[SP] += 1  
-
-            # CMP
+            
+            
             elif command == CMP:
+                # self.flags = CMP
+
                 if self.reg[operand_a] < self.reg[operand_b]:
                     Less_than = 1
                     Greater_than = 0
                     Equal = 0
                     self.flags = 0b00000100
-                elif self.reg[operand_a] < self.reg[operand_b]:
+
+                elif self.reg[operand_a] > self.reg[operand_b]:
                     Less_than = 0
                     Greater_than = 1
                     Equal = 0
                     self.flags = 0b00000010
-                elif self.reg[operand_a] < self.reg[operand_b]:
+
+                elif self.reg[operand_a] == self.reg[operand_b]:
                     Less_than = 0
                     Greater_than = 0
                     Equal = 1
                     self.flags = 0b00000001
-                    self.pc += 3
-            # JMP
+
+                self.pc += 3
+
             elif command == JMP:
                 self.pc = self.reg[operand_a]
-            # JEQ
+
             elif command == JEQ:
                 if Equal == True:
                     self.pc = self.reg[operand_a]
                 else:
-                    self.pc +=2
+                    self.pc += 2
 
-
+            elif command == JNE:
+                if Equal == False:
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc += 2
             else:
                 print(f"program failed to run", "{0:b}".format(command))
                 sys.exit(1)
 
             # self.pc += instruction_length
+
 
 
 
