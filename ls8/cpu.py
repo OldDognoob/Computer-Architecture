@@ -12,6 +12,7 @@ PUSH = 0b01000101
 POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
+CMP = 0b10100111
 
 SP = 7 # SP to be R7 
 import sys
@@ -25,6 +26,7 @@ class CPU:
         self.ram = [0] * 255 # bytes of memory
         self.reg = [0] * 8 # like variables
         self.halted = False
+        self.flags = [0] * 8 # bytes
         
 
     def ram_read(self,mar):
