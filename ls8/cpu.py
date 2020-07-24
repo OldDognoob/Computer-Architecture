@@ -12,7 +12,8 @@ PUSH = 0b01000101
 POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
-CMP = 0b10100111
+CMP = 0b10100111 # Compare - if values are equal set E flag to 1, else to zero
+JMP = 0B01010100 # Jump to addr stored
 
 SP = 7 # SP to be R7 
 
@@ -202,6 +203,9 @@ class CPU:
                     Equal = 1
                     self.flags = 0b00000001
                     self.pc += 3
+            # JMP
+            elif command == JMP:
+                self.pc = self.reg[operand_a]
 
 
             else:
